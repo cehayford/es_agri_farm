@@ -8,7 +8,6 @@ class Product {
   final DateTime dateCreated;
   final String imageUrl;
 
-
   Product({
     required this.name,
     required this.price,
