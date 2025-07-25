@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Carrots",
+    "price": 10.0,
+    "description": "Fresh carrots from the farm.",
+    "date_created": "2024-07-25T12:00:00Z",
+    "image_url": "lib/asset/carrots.jpg"
+  },
+  {
+    "name": "Female Goats",
+    "price": 150.0,
+    "description": "Healthy female goats.",
+    "date_created": "2024-07-25T12:00:00Z",
+    "image_url": "lib/asset/female-goats.jpg"
+  },
+  {
+    "name": "Tomato",
+    "price": 25.0,
+    "description": "Organic tomatoes.",
+    "date_created": "2024-07-25T12:00:00Z",
+    "image_url": "lib/asset/tomato.png"
+  },
+  {
+    "name": "Potato",
+    "price": 15.5,
+    "description": "Farm-grown potatoes.",
+    "date_created": "2024-07-25T12:00:00Z",
+    "image_url": "lib/asset/potato.jpg"
+  }
+]
