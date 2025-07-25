@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'controller/productor_controller.dart';
 
 class ProductListScreen extends StatelessWidget {
-  const ProductListScreen({Key? key}) : super(key: key);
+  const ProductListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,12 +13,17 @@ class ProductListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Farm Products'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              Navigator.pushReplacementNamed(context, '/login');
-            },
+          Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                // Use context immediately after async call
+                if (context.mounted) {
+                  Navigator.pushReplacementNamed(context, '/login');
+                }
+              },
+            ),
           ),
         ],
       ),
