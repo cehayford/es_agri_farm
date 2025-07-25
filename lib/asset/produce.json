@@ -1,30 +1,66 @@
 [
   {
-    "name": "Carrots",
-    "price": 10.0,
+    "name": "Carrots(bag)",
+    "price": 1000.0,
     "description": "Fresh carrots from the farm.",
     "date_created": "2024-07-25T12:00:00Z",
-    "image_url": "lib/asset/carrots.jpg"
+    "image_url": "lib/asset/carrots.jpg",
+    "category": "crops"
   },
   {
-    "name": "Female Goats",
-    "price": 150.0,
-    "description": "Healthy female goats.",
-    "date_created": "2024-07-25T12:00:00Z",
-    "image_url": "lib/asset/female-goats.jpg"
-  },
-  {
-    "name": "Tomato",
-    "price": 25.0,
+    "name": "Tomato(bag)",
+    "price": 2500.00,
     "description": "Organic tomatoes.",
     "date_created": "2024-07-25T12:00:00Z",
-    "image_url": "lib/asset/tomato.png"
+    "image_url": "lib/asset/tomatoes.jpg",
+    "category": "crops"
   },
   {
-    "name": "Potato",
-    "price": 15.5,
-    "description": "Farm-grown potatoes.",
+    "name": "Fresh Corn(bag)",
+    "price": 1550.00,
+    "description": "Flesh corn fron the farm.",
     "date_created": "2024-07-25T12:00:00Z",
-    "image_url": "lib/asset/potato.jpg"
+    "image_url": "lib/asset/fresh-corn.jpg",
+    "category": "crops"
+  },
+  {
+    "name": "Nanny Goats",
+    "price": 900.00,
+    "description": "Healthy and natured female goat for sales.",
+    "date_created": "2024-07-25T12:00:00Z",
+    "image_url": "lib/asset/female-goats.jpg",
+    "category": "livestock"
+  },
+  {
+    "name": "Billy Goats",
+    "price": 950.00,
+    "description": "Healthy and natured male goat for sale.",
+    "date_created": "2024-07-25T12:00:00Z",
+    "image_url": "lib/asset/male-goat.jpg",
+    "category": "livestock"
+  },
+  {
+    "name": "Male Sheep(Ram)",
+    "price": 950.00,
+    "description": "Healthy and natured male sheep for sale.",
+    "date_created": "2024-07-25T12:00:00Z",
+    "image_url": "lib/asset/male-sheep.jpg",
+    "category": "livestock"
+  },
+  {
+    "name": "kid Goat",
+    "price": 670.00,
+    "description": "Healthy and natured young goats for sale.",
+    "date_created": "2024-07-25T12:00:00Z",
+    "image_url": "lib/asset/young-white-goat.jpg",
+    "category": "livestock"
+  },
+  {
+    "name": "Female Sheep(Ewe)",
+    "price": 900.00,
+    "description": "Healthy and natured female sheep for sale.",
+    "date_created": "2024-07-25T12:00:00Z",
+    "image_url": "lib/asset/female-sheep.jpg",
+    "category": "livestock"
   }
 ]

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login.dart';
 import '../products/product_list.dart';
+import '../products/controller/CartController.dart'; // Add this import
 
 class AuthGate extends StatelessWidget {
-  const AuthGate({Key? key}) : super(key: key);
+  const AuthGate({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,8 @@ class AuthGate extends StatelessWidget {
           );
         }
         if (snapshot.hasData) {
-          return const ProductListScreen();
+          // Provide the required cartController argument here
+          return ProductListScreen(cartController: CartController());
         }
         return const LoginScreen();
       },

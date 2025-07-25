@@ -185,7 +185,7 @@ packages:
     source: sdk
     version: "0.0.0"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: "2c11f3f94c687ee9bad77c171151672986360b2b001d109814ee7140b2cf261b"
@@ -288,6 +288,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.5"
+  searchable_listview:
+    dependency: "direct main"
+    description:
+      name: searchable_listview
+      sha256: b689f63989681dd7bd280ba5bda337a4a2b4b64eac02965b536ce325924eba8d
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.19.2"
   sky_engine:
     dependency: transitive
     description: flutter

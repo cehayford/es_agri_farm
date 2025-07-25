@@ -3,14 +3,20 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'auth/auth_gate.dart';
 import 'auth/signup.dart';
+import 'products/cartview.dart';
+import 'products/controller/CartController.dart';
+import 'products/product_list.dart';
 
-Future<void> main() async {
+// snippet
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
 }
+
+final CartController cartController = CartController();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -20,13 +26,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'AgriFarm',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black12),
+        useMaterial3: true, // Use Flutter's default Material color scheme
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const AuthGate(),
+        '/': (context) => AuthGate(),
         '/signup': (context) => const SignupScreen(),
-        // Add '/products': (context) => ProductListScreen() later
+        '/product': (context) =>
+            ProductListScreen(cartController: cartController),
+        '/cart': (context) => CartScreen(cartController: cartController),
+        // Add '/category': (context) => CategoryScreen() if you have one
       },
     );
   }
