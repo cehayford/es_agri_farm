@@ -1,32 +1,13 @@
 {
   "project_info": {
-    "project_number": "1045084828262",
-    "project_id": "agri-db-5dbc5",
-    "storage_bucket": "agri-db-5dbc5.firebasestorage.app"
+    "project_number": "1051869861765",
+    "project_id": "agri-farms-db",
+    "storage_bucket": "agri-farms-db.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1045084828262:android:a76a5e04a074b3d17d73a7",
-        "android_client_info": {
-          "package_name": "com.example.agri_farm"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBwecbzmYIxLanrkBJND9B7k2-46ifnUXk"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1045084828262:android:892b693c0b4c4f437d73a7",
+        "mobilesdk_app_id": "1:1051869861765:android:50e38796bbed98eb6c56ec",
         "android_client_info": {
           "package_name": "com.example.untitled"
         }
@@ -34,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBwecbzmYIxLanrkBJND9B7k2-46ifnUXk"
+          "current_key": "AIzaSyCJXRAFO1B0UitneRMxxqNf9W0g2BAAvB0"
         }
       ],
       "services": {
