@@ -9,6 +9,7 @@ class Product {
   final String imageUrl;
   final String category; // Not nullable
 
+
   Product({
     required this.name,
     required this.price,
