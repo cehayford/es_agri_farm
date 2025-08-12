@@ -1,0 +1,6 @@
+<!-- This is a placeholder image for your app -->
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="400" fill="#4CAF50" />
+  <text x="400" y="200" font-family="Arial" font-size="36" fill="white" text-anchor="middle">Agri Farm Slide 1</text>
+</svg>
+

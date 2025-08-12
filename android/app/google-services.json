@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1051869861765",
-    "project_id": "agri-farms-db",
-    "storage_bucket": "agri-farms-db.firebasestorage.app"
+    "project_number": "541359313358",
+    "project_id": "es-agri-farms",
+    "storage_bucket": "es-agri-farms.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1051869861765:android:50e38796bbed98eb6c56ec",
+        "mobilesdk_app_id": "1:541359313358:android:22113c862c905d11951b9f",
         "android_client_info": {
           "package_name": "com.example.untitled"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCJXRAFO1B0UitneRMxxqNf9W0g2BAAvB0"
+          "current_key": "AIzaSyBFi_l1wZ2bb8xOs3n1xGNtWjcM_cCzf9s"
         }
       ],
       "services": {

@@ -1,0 +1,14 @@
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/agrilogo.jpg
+  android:fullscreen: true
+  ios: true
+  android_scale_type: "centerCrop"
+  android_gravity: true
+  ios_content_mode: "scaleAspectFill"
+
+  android_12:
+    image: assets/images/agrilogo.jpg
+    color: "#ffffff"
+    adaptive_icon_background: "#ffffff"
+    adaptive_icon_foreground: assets/images/agrilogo.jpg
