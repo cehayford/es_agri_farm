@@ -1,0 +1,49 @@
+name: agri_farm
+description: "Flutter project for end-semster project."
+
+publish_to: 'none' # Remove this line if you plan to publish the package.
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0' # Adjusted for modern Flutter, ensure compatibility
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+
+  # Firebase dependencies
+  firebase_core: ^3.15.1
+  firebase_auth: ^5.6.2
+  cloud_firestore: ^5.0.0
+  firebase_storage: ^12.0.0
+
+  # State management
+  provider: ^6.0.0
+
+  # UI packages
+  flutter_carousel_widget: ^2.1.2
+
+  # Simple utilities only
+  shared_preferences: ^2.5.3
+  get: ^4.7.2
+  image_picker: ^1.1.2
+  flutter_native_splash: ^2.4.6
+  flutter_launcher_icons: ^0.14.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Assets for your images and icons
+  assets:
+    - assets/images/
+    - assets/icons/
