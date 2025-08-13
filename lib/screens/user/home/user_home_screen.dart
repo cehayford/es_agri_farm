@@ -16,10 +16,9 @@ class UserHomeScreen extends StatefulWidget {
 class _UserHomeScreenState extends State<UserHomeScreen> {
   int _currentCarouselIndex = 0;
   final List<String> _carouselImages = [
-    'assets/images/slide1.svg',
-    'assets/images/slide2.svg',
-    'assets/images/slide3.svg',
-    'assets/images/slide4.svg',
+    'assets/images/slide1.jpg',
+    'assets/images/slide2.jpg',
+    'assets/images/slide3.jpg',
   ];
 
   @override
@@ -50,6 +49,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 16,),
               // Carousel Slider
               _buildCarouselSlider(),
 
@@ -86,37 +86,19 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 child: Image.asset(
                   imageUrl,
                   fit: BoxFit.cover,
-                  // loadingBuilder: (context, child, loadingProgress) {
-                  //   if (loadingProgress == null) return child;
-                  //   return Center(
-                  //     child: CircularProgressIndicator(
-                  //       value: loadingProgress.expectedTotalBytes != null
-                  //           ? loadingProgress.cumulativeBytesLoaded /
-                  //             (loadingProgress.expectedTotalBytes ?? 1)
-                  //           : null,
-                  //     ),
-                  //   );
-                  // },
-                  // errorBuilder: (context, error, stackTrace) {
-                  //   return Container(
-                  //     color: AppColors.lightGrey,
-                  //     child: const Center(
-                  //       child: Icon(Icons.error, color: AppColors.error),
-                  //     ),
-                  //   );
-                  // },
+
                 ),
               ),
             );
           }).toList(),
           options: CarouselOptions(
             height: 180,
-            viewportFraction: 0.9,
+            viewportFraction: 0.95,
             initialPage: 0,
             enableInfiniteScroll: true,
             reverse: false,
             autoPlay: true,
-            autoPlayInterval: const Duration(seconds: 3),
+            autoPlayInterval: const Duration(seconds: 5),
             autoPlayAnimationDuration: const Duration(milliseconds: 800),
             autoPlayCurve: Curves.fastOutSlowIn,
             enlargeCenterPage: true,
@@ -129,23 +111,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           ),
         ),
         const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: _carouselImages.asMap().entries.map((entry) {
-            return Container(
-              width: 8.0,
-              height: 8.0,
-              margin: const EdgeInsets.symmetric(horizontal: 4.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: (Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : AppColors.primary)
-                    .withOpacity(_currentCarouselIndex == entry.key ? 0.9 : 0.4),
-              ),
-            );
-          }).toList(),
-        ),
       ],
     );
   }

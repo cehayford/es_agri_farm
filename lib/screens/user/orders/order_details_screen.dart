@@ -321,68 +321,42 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
                           // Shipping address
                           _buildSectionHeader('Shipping Address'),
-                          Card(
-                            margin: const EdgeInsets.only(bottom: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _order!.shippingAddress['fullName'] ?? '',
-                                    style: AppTextStyles.bodyMedium.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    _order!.shippingAddress['phoneNumber'] ?? '',
-                                    style: AppTextStyles.bodySmall,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    _formatAddress(_order!.shippingAddress),
-                                    style: AppTextStyles.bodyMedium,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+      SizedBox(
+        width: double.infinity,
+        child: Card(
+          margin: const EdgeInsets.only(bottom: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _order!.shippingAddress['fullName'] ?? '',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _order!.shippingAddress['phoneNumber'] ?? '',
+                  style: AppTextStyles.bodySmall,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _formatAddress(_order!.shippingAddress),
+                  style: AppTextStyles.bodyMedium,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
 
-                          // Payment method
-                          _buildSectionHeader('Payment Information'),
-                          Card(
-                            margin: const EdgeInsets.only(bottom: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.payment, color: AppColors.grey),
-                                  const SizedBox(width: 12),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Payment Method',
-                                        style: TextStyle(
-                                          color: AppColors.textSecondary,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
 
-                        ],
+      ],
                       ),
                     ),
     );
@@ -440,7 +414,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '\$${item.price.toStringAsFixed(2)} × ${item.quantity}',
+                  'GHS ${item.price.toStringAsFixed(2)} × ${item.quantity}',
                   style: AppTextStyles.bodySmall,
                 ),
               ],
@@ -449,7 +423,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
           // Item total
           Text(
-            '\$${item.totalPrice.toStringAsFixed(2)}',
+            'GHS ${item.totalPrice.toStringAsFixed(2)}',
             style: AppTextStyles.bodyMedium.copyWith(
               fontWeight: FontWeight.w600,
             ),
@@ -472,7 +446,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 : AppTextStyles.bodyMedium,
           ),
           Text(
-            '\$${amount.toStringAsFixed(2)}',
+            'GHS ${amount.toStringAsFixed(2)}',
             style: isTotal
                 ? AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold)
                 : AppTextStyles.bodyMedium,

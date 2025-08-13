@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import '../../../controllers/order_controller.dart';
+import '../../../models/order_model.dart';
 import '../../../utils/utils.dart';
 import '../../../widgets/widgets.dart';
+import 'admin_order_details_screen.dart';
 
 class AdminOrdersScreen extends StatefulWidget {
   const AdminOrdersScreen({super.key});
@@ -29,7 +33,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
 
     try {
       Query query = _firestore.collection(AppConstants.ordersCollection)
-          .orderBy('createdAt', descending: true);
+          .orderBy('orderDate', descending: true);
 
       // Apply status filter if not 'all'
       if (_statusFilter != 'all') {
@@ -37,6 +41,8 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
       }
 
       final snapshot = await query.get();
+
+      print('Orders fetched: ${snapshot.docs.length}'); // Debug print to check results
 
       setState(() {
         _orders = snapshot.docs;
@@ -173,19 +179,30 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
   }
 
   Widget _buildOrderItem(String id, Map<String, dynamic> data) {
-    final customerName = data['customerName'] ?? 'Unknown Customer';
-    final itemCount = data['items']?.length ?? 0;
-    final totalAmount = data['totalAmount'] != null
-        ? '\$${(data['totalAmount'] as num).toStringAsFixed(2)}'
+    // Get customer name from shippingAddress
+    final shippingAddress = data['shippingAddress'] as Map<String, dynamic>? ?? {};
+    final customerName = shippingAddress['fullName'] ?? 'Unknown Customer';
+
+    // Get items array
+    final items = data['items'] as List<dynamic>? ?? [];
+    final itemCount = items.length;
+
+    // Get total amount
+    final total = data['total'] != null
+        ? 'GHS ${(data['total'] as num).toStringAsFixed(2)}'
         : 'N/A';
+
+    // Get status
     final status = data['status'] ?? 'unknown';
-    final createdAt = data['createdAt'] != null
-        ? (data['createdAt'] as Timestamp).toDate()
+
+    // Get order date
+    final orderDate = data['orderDate'] != null
+        ? (data['orderDate'] as Timestamp).toDate()
         : DateTime.now();
 
     // Format date
-    final orderDate = '${createdAt.day}/${createdAt.month}/${createdAt.year}';
-    final orderTime = '${createdAt.hour}:${createdAt.minute.toString().padLeft(2, '0')}';
+    final formattedDate = '${orderDate.day}/${orderDate.month}/${orderDate.year}';
+    final formattedTime = '${orderDate.hour}:${orderDate.minute.toString().padLeft(2, '0')}';
 
     // Get color based on status
     Color statusColor;
@@ -261,7 +278,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
               children: [
                 const Icon(Icons.calendar_today, size: 16, color: AppColors.textSecondary),
                 const SizedBox(width: 4),
-                Text('$orderDate at $orderTime'),
+                Text('$formattedDate at $formattedTime'),
               ],
             ),
             const SizedBox(height: 4),
@@ -285,7 +302,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                   children: [
                     const Text('Total Amount'),
                     Text(
-                      totalAmount,
+                      total,
                       style: AppTextStyles.bodyLarge.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppColors.primary,
@@ -334,21 +351,35 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
   }
 
   Future<void> _showOrderDetails(String id, Map<String, dynamic> data) async {
+    // Extract data from the order
     final items = data['items'] as List<dynamic>? ?? [];
-    final customerName = data['customerName'] ?? 'Unknown Customer';
-    final address = data['address'] ?? 'No address provided';
-    final phoneNumber = data['phoneNumber'] ?? 'No phone number';
-    final email = data['email'] ?? 'No email';
-    final status = data['status'] ?? 'unknown';
-    final totalAmount = data['totalAmount'] != null
-        ? '\$${(data['totalAmount'] as num).toStringAsFixed(2)}'
-        : 'N/A';
-    final createdAt = data['createdAt'] != null
-        ? (data['createdAt'] as Timestamp).toDate()
-        : DateTime.now();
+    final shippingAddress = data['shippingAddress'] as Map<String, dynamic>? ?? {};
 
-    // Format date
-    final orderDate = '${createdAt.day}/${createdAt.month}/${createdAt.year} at ${createdAt.hour}:${createdAt.minute.toString().padLeft(2, '0')}';
+    // Customer information from shipping address
+    final customerName = shippingAddress['fullName'] ?? 'Unknown Customer';
+    final phoneNumber = shippingAddress['phoneNumber'] ?? 'No phone number';
+
+    // Format address
+    final addressParts = [
+      shippingAddress['addressLine1'],
+      shippingAddress['addressLine2'],
+      shippingAddress['city'],
+      shippingAddress['state'],
+      shippingAddress['postalCode']
+    ].where((part) => part != null && part.toString().isNotEmpty).join(', ');
+    final address = addressParts.isNotEmpty ? addressParts : 'No address provided';
+
+    // Order details
+    final status = data['status'] ?? 'unknown';
+    final total = data['total'] != null
+        ? 'GHS ${(data['total'] as num).toStringAsFixed(2)}'
+        : 'N/A';
+
+    // Order date
+    final orderDate = data['orderDate'] != null
+        ? (data['orderDate'] as Timestamp).toDate()
+        : DateTime.now();
+    final formattedDate = '${orderDate.day}/${orderDate.month}/${orderDate.year} at ${orderDate.hour}:${orderDate.minute.toString().padLeft(2, '0')}';
 
     showModalBottomSheet(
       context: context,
@@ -402,7 +433,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 4),
-                        Text('Placed on $orderDate'),
+                        Text('Placed on $formattedDate'),
                       ],
                     ),
                   ),
@@ -415,7 +446,6 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                   ),
                   const SizedBox(height: 8),
                   _buildInfoRow('Name', customerName),
-                  _buildInfoRow('Email', email),
                   _buildInfoRow('Phone', phoneNumber),
                   _buildInfoRow('Address', address),
                   const SizedBox(height: 24),
@@ -433,13 +463,13 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                     separatorBuilder: (context, index) => const Divider(),
                     itemBuilder: (context, index) {
                       final item = items[index] as Map<String, dynamic>;
-                      final productName = item['name'] ?? 'Unknown Product';
+                      final productName = item['productName'] ?? 'Unknown Product';
                       final productPrice = item['price'] != null
-                          ? '\$${(item['price'] as num).toStringAsFixed(2)}'
+                          ? 'GHS ${(item['price'] as num).toStringAsFixed(2)}'
                           : 'N/A';
                       final quantity = item['quantity'] ?? 1;
-                      final subtotal = item['subtotal'] != null
-                          ? '\$${(item['subtotal'] as num).toStringAsFixed(2)}'
+                      final subtotal = (item['price'] != null && item['quantity'] != null)
+                          ? 'GHS ${((item['price'] as num) * (item['quantity'] as num)).toStringAsFixed(2)}'
                           : 'N/A';
 
                       return Row(
@@ -452,11 +482,11 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                               color: AppColors.lightGrey,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: item['imageUrl'] != null && (item['imageUrl'] as String).isNotEmpty
+                            child: item['productImage'] != null && (item['productImage'] as String).isNotEmpty
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
                                     child: Image.network(
-                                      item['imageUrl'],
+                                      item['productImage'],
                                       fit: BoxFit.cover,
                                       errorBuilder: (context, error, stackTrace) {
                                         return const Icon(Icons.image_not_supported);
@@ -497,7 +527,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                     children: [
                       const Text('Total Amount'),
                       Text(
-                        totalAmount,
+                        total,
                         style: AppTextStyles.bodyLarge.copyWith(
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary,

@@ -391,7 +391,7 @@ class _AdminProductsScreenState extends State<AdminProductsScreen> {
                             if (product.discountPrice != null) ...[
                               const SizedBox(width: 8),
                               Text(
-                                '\$${product.discountPrice!.toStringAsFixed(2)}',
+                                'GHS ${product.discountPrice!.toStringAsFixed(2)}',
                                 style: AppTextStyles.bodyMedium.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.primary,

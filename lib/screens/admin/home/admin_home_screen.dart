@@ -57,13 +57,16 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         }
 
         // Calculate total revenue from completed orders
-        if (data['status'] == AppConstants.orderCompleted && data['totalAmount'] != null) {
-          revenue += (data['totalAmount'] as num).toDouble();
+        if (data['status'] == AppConstants.orderCompleted && data['total'] != null) {
+          revenue += (data['total'] as num).toDouble();
+          print('Found completed order with total: ${data['total']}'); // Debug print
         }
       }
 
       _pendingOrders = pendingOrders;
       _totalRevenue = revenue;
+
+      print('Total calculated revenue: $_totalRevenue'); // Debug print
 
       setState(() {
         _isLoading = false;
@@ -124,13 +127,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                     _buildRevenueCard(),
                     const SizedBox(height: 24),
 
-                    // Recent Orders
-                    Text(
-                      'Recent Orders',
-                      style: AppTextStyles.heading3,
-                    ),
-                    const SizedBox(height: 16),
-                    _buildRecentOrdersList(),
                   ],
                 ),
               ),
@@ -215,7 +211,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              '\$${_totalRevenue.toStringAsFixed(2)}',
+              'GHS ${_totalRevenue.toStringAsFixed(2)}',
               style: AppTextStyles.heading1.copyWith(
                 color: Colors.green,
                 fontWeight: FontWeight.bold,

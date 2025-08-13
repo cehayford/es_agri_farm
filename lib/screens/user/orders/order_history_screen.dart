@@ -154,7 +154,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   ),
                   const Spacer(),
                   Text(
-                    'Total: \$${order.total.toStringAsFixed(2)}',
+                    'Total: GHS ${order.total.toStringAsFixed(2)}',
                     style: AppTextStyles.bodyMedium.copyWith(
                       fontWeight: FontWeight.bold,
                     ),

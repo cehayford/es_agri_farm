@@ -98,16 +98,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   // Helper method to update user profile and handle image upload
   Future<void> _updateUserProfile(AuthController authController, UserModel user) async {
-    // This is a placeholder method - you need to implement this in AuthController
-    // or call appropriate Firestore methods directly
+    String? profileImageUrl;
 
-    // Example implementation (adjust based on your actual AuthController implementation):
-    // 1. If image is selected, upload it to Firebase Storage
-    // 2. Update user document in Firestore with new data
+    // If a new image was selected, upload it to Firebase Storage
+    if (_selectedImage != null) {
+      // You'll need to implement image upload logic here
+      // For now, we'll just update the profile with the new name
+    }
 
-    // Mock implementation for demonstration
-    await Future.delayed(const Duration(seconds: 1));
-    throw Exception('Not implemented: Add updateProfile method to AuthController');
+    // Call the existing updateProfile method in AuthController
+    final success = await authController.updateProfile(
+      userId: user.id,
+      fullname: _fullNameController.text.trim(),
+      profileImageUrl: profileImageUrl,
+    );
+
+    if (!success) {
+      throw Exception(authController.error);
+    }
   }
 
   @override

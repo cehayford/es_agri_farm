@@ -25,6 +25,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
   final _nameController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _currentPasswordController = TextEditingController();
   bool _isLoading = false;
   bool _isChangingPassword = false;
   File? _selectedImage;
@@ -40,6 +41,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
     _nameController.dispose();
     _newPasswordController.dispose();
     _confirmPasswordController.dispose();
+    _currentPasswordController.dispose();
     super.dispose();
   }
 
@@ -159,8 +161,13 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
     });
 
     try {
-      // Direct password update without reauthentication
-      await _auth.currentUser!.updatePassword(_newPasswordController.text.trim());
+      final authController = Provider.of<AuthController>(context, listen: false);
+
+      // Use the AuthController's changePassword method for secure password change
+      await authController.changePassword(
+        currentPassword: _currentPasswordController.text.trim(),
+        newPassword: _newPasswordController.text.trim(),
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -172,6 +179,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
       }
 
       // Clear the password fields
+      _currentPasswordController.clear();
       _newPasswordController.clear();
       _confirmPasswordController.clear();
     } catch (e) {
@@ -180,7 +188,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error changing password: $e'),
+            content: Text('Error: ${e.toString().replaceAll('Exception: ', '')}'),
             backgroundColor: AppColors.error,
           ),
         );
@@ -227,68 +235,237 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
   }
 
   Future<void> _showChangePasswordDialog() async {
-    showDialog(
+    // Create temporary controllers just for this dialog to avoid disposal issues
+    final currentPasswordController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+
+    final formKey = GlobalKey<FormState>();
+
+    // Local state variables
+    bool isChanging = false;
+    String? errorMessage;
+    bool success = false;
+
+    // Use a StatefulBuilder to allow updating the dialog's state
+    await showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Change Password'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
+      barrierDismissible: false, // Prevent closing by tapping outside
+      builder: (BuildContext dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('Change Password'),
+              content: Form(
+                key: formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Success message
+                      if (success)
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: AppColors.success.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: AppColors.success),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.check_circle, color: AppColors.success),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Password changed successfully!',
+                                  style: TextStyle(color: AppColors.success),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
 
-                // New password field
-                CustomTextField(
-                  label: 'New Password',
-                  hint: 'Enter your new password',
-                  controller: _newPasswordController,
-                  prefixIcon: Icons.lock_outline,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a new password';
-                    } else if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
+                      // Error message
+                      if (errorMessage != null)
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: AppColors.error.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: AppColors.error),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.error_outline, color: AppColors.error),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  errorMessage!,
+                                  style: const TextStyle(color: AppColors.error),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
 
-                // Confirm password field
-                CustomTextField(
-                  label: 'Confirm Password',
-                  hint: 'Confirm your new password',
-                  controller: _confirmPasswordController,
-                  prefixIcon: Icons.lock_outline,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please confirm your new password';
-                    } else if (value != _newPasswordController.text) {
-                      return 'Passwords do not match';
-                    }
-                    return null;
-                  },
+                      // Current password field
+                      CustomTextField(
+                        label: 'Current Password',
+                        hint: 'Enter your current password',
+                        controller: currentPasswordController,
+                        prefixIcon: Icons.lock_outline,
+                        enabled: !isChanging && !success,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your current password';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // New password field
+                      CustomTextField(
+                        label: 'New Password',
+                        hint: 'Enter your new password',
+                        controller: newPasswordController,
+                        prefixIcon: Icons.lock_outline,
+                        enabled: !isChanging && !success,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a new password';
+                          } else if (value.length < 6) {
+                            return 'Password must be at least 6 characters';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Confirm password field
+                      CustomTextField(
+                        label: 'Confirm Password',
+                        hint: 'Confirm your new password',
+                        controller: confirmPasswordController,
+                        prefixIcon: Icons.lock_outline,
+                        enabled: !isChanging && !success,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please confirm your new password';
+                          } else if (value != newPasswordController.text) {
+                            return 'Passwords do not match';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
                 ),
+              ),
+              actions: [
+                // Cancel button
+                TextButton(
+                  onPressed: isChanging ? null : () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancel'),
+                ),
+
+                // Change Password / Done button
+                if (success)
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.success,
+                    ),
+                    child: const Text('Done'),
+                  )
+                else
+                  ElevatedButton(
+                    onPressed: isChanging ? null : () async {
+                      if (formKey.currentState!.validate()) {
+                        // Update loading state
+                        setState(() {
+                          isChanging = true;
+                          errorMessage = null;
+                        });
+
+                        try {
+                          final authController = Provider.of<AuthController>(context, listen: false);
+
+                          // Use the AuthController's changePassword method
+                          await authController.changePassword(
+                            currentPassword: currentPasswordController.text.trim(),
+                            newPassword: newPasswordController.text.trim(),
+                          );
+
+                          // Update success state
+                          setState(() {
+                            isChanging = false;
+                            success = true;
+                          });
+
+                          // Show success snackbar
+                          if (mounted) {
+                            ScaffoldMessenger.of(this.context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Password changed successfully'),
+                                backgroundColor: AppColors.success,
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          print('Error changing password: $e');
+
+                          // Extract a more user-friendly error message
+                          String friendlyMessage = 'Failed to change password';
+
+                          if (e.toString().contains('wrong-password') ||
+                              e.toString().contains('incorrect') ||
+                              e.toString().contains('auth credential is incorrect')) {
+                            friendlyMessage = 'The current password you entered is incorrect';
+                          } else if (e.toString().contains('requires-recent-login') ||
+                                     e.toString().contains('expired')) {
+                            friendlyMessage = 'Your session has expired. Please log out and log in again before changing your password';
+                          } else if (e.toString().contains('weak-password')) {
+                            friendlyMessage = 'Your new password is too weak. Please use a stronger password';
+                          }
+
+                          // Update error state
+                          setState(() {
+                            isChanging = false;
+                            errorMessage = friendlyMessage;
+                          });
+                        }
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                    ),
+                    child: isChanging
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.0,
+                            ),
+                          )
+                        : const Text('Change Password'),
+                  ),
               ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _changePassword();
-              },
-              child: const Text('Change Password'),
-            ),
-          ],
+            );
+          }
         );
       },
-    );
+    ).then((_) {
+      // Properly dispose of the controllers when the dialog is closed
+      currentPasswordController.dispose();
+      newPasswordController.dispose();
+      confirmPasswordController.dispose();
+    });
   }
 
   @override
@@ -331,8 +508,8 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                     backgroundImage: _selectedImage != null
                         ? FileImage(_selectedImage!) as ImageProvider
                         : (user.profilePicture != null && user.profilePicture!.isNotEmpty
-                            ? NetworkImage(user.profilePicture!)
-                            : null),
+                        ? NetworkImage(user.profilePicture!)
+                        : null),
                     child: (user.profilePicture == null || user.profilePicture!.isEmpty) && _selectedImage == null
                         ? const Icon(Icons.person, size: 64, color: AppColors.grey)
                         : null,

@@ -317,4 +317,53 @@ class AuthController with ChangeNotifier {
       }
     }
   }
+
+  // Update user profile
+  Future<bool> updateProfile({
+    required String userId,
+    required String fullname,
+    String? profileImageUrl,
+  }) async {
+    _setLoading(true);
+    _setError('');
+
+    try {
+      // Prepare the data to update
+      final Map<String, dynamic> updateData = {
+        'fullname': fullname,
+      };
+
+      // Add profile image URL if provided
+      if (profileImageUrl != null) {
+        updateData['profileImageUrl'] = profileImageUrl;
+      }
+
+      // Update the user document in Firestore
+      await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(userId)
+          .update(updateData);
+
+      // Update the local user model
+      if (_user != null) {
+        final updatedUser = UserModel(
+          id: _user!.id,
+          fullname: fullname,
+          email: _user!.email,
+          role: _user!.role,
+          profilePicture: profileImageUrl ?? _user!.profilePicture,
+        );
+
+        // Refresh the user data in memory and cache
+        refreshUser(updatedUser);
+      }
+
+      _setLoading(false);
+      return true;
+    } catch (e) {
+      _setLoading(false);
+      _setError('Failed to update profile: $e');
+      return false;
+    }
+  }
 }
