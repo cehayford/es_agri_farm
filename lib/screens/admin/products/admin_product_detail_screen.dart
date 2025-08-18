@@ -223,7 +223,7 @@ class AdminProductDetailScreen extends StatelessWidget {
         Row(
           children: [
             Text(
-              '\$${product.price.toStringAsFixed(2)}',
+              'GHS ${product.price.toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -234,7 +234,7 @@ class AdminProductDetailScreen extends StatelessWidget {
             if (product.discountPrice != null) ...[
               const SizedBox(width: 12),
               Text(
-                '\$${product.discountPrice!.toStringAsFixed(2)}',
+                'GHS ${product.discountPrice!.toStringAsFixed(2)}',
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
