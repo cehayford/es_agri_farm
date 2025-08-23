@@ -9,6 +9,6 @@
 > Passcode: ```1234567890```
 
 # Other Reference
-> UI/UX Design: [Figma Design]()
+> UI/UX Design: [Figma Design](https://www.figma.com/proto/HiO0kmHLBwomiAlUCeBwX9/food-app-ui-project--Copy-?node-id=0-1&t=BmkoFHUB2hpmuuWt-1)
 
 > Android APK file: [Download From Google Drive](https://drive.google.com/file/d/1PdO0J8CAp-uw7tkGcT7K4pibJdCptwIj/view?usp=sharing)
